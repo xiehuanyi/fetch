@@ -210,6 +210,11 @@ function readArrayBufferAsText(buf) {
 }
 
 function bufferClone(buf) {
+  if (buf.buffer) {
+    var copy = new Uint8Array(buf.byteLength)
+    copy.set(new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength))
+    return copy.buffer
+  }
   if (buf.slice) {
     return buf.slice(0)
   } else {
@@ -248,7 +253,7 @@ function Body() {
     } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
       this._bodyText = body.toString()
     } else if (support.arrayBuffer && support.blob && isDataView(body)) {
-      this._bodyArrayBuffer = bufferClone(body.buffer)
+      this._bodyArrayBuffer = bufferClone(body)
       // IE 10-11 can't handle a DataView body.
       this._bodyInit = new Blob([this._bodyArrayBuffer])
     } else if (support.arrayBuffer && (ArrayBuffer.prototype.isPrototypeOf(body) || isArrayBufferView(body))) {

@@ -142,7 +142,10 @@ exercise.forEach(function(exerciseMode) {
           inputs = inputs.concat([
             ['type ArrayBuffer', arrayBufferFromText(expected)],
             ['type TypedArray', new Uint8Array(arrayBufferFromText(expected))],
-            ['type DataView', new DataView(arrayBufferFromText(expected))]
+            ['type DataView', new DataView(arrayBufferFromText(expected))],
+            ['type DataView subrange', new DataView(arrayBufferFromText('prefix' + expected + 'suffix'), 6, expected.length)],
+            ['type TypedArray subrange', new Uint8Array(arrayBufferFromText('prefix' + expected + 'suffix'), 6, expected.length)],
+            ['type wide TypedArray', new Uint16Array(arrayBufferFromText(expected))]
           ])
         }
 
@@ -172,7 +175,10 @@ exercise.forEach(function(exerciseMode) {
               var r = factory(body)
               return r
                 .arrayBuffer()
-                .then(readArrayBufferAsText)
+                .then(function(buffer) {
+                  assert.instanceOf(buffer, ArrayBuffer)
+                  return readArrayBufferAsText(buffer)
+                })
                 .then(function(text) {
                   assert.equal(text, expected)
                 })
