@@ -211,6 +211,13 @@ function readArrayBufferAsText(buf) {
 
 function bufferClone(buf) {
   if (isArrayBufferView(buf) || isDataView(buf)) {
+    if (!isDataView(buf) && buf.slice) {
+      var sliced = buf.slice(0)
+      if (sliced.byteOffset === 0 && sliced.byteLength === sliced.buffer.byteLength) {
+        return sliced.buffer
+      }
+      buf = sliced
+    }
     var copy = new Uint8Array(buf.byteLength)
     copy.set(new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength))
     return copy.buffer
