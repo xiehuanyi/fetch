@@ -210,7 +210,7 @@ function readArrayBufferAsText(buf) {
 }
 
 function bufferClone(buf) {
-  if (buf.buffer) {
+  if (isArrayBufferView(buf) || isDataView(buf)) {
     var copy = new Uint8Array(buf.byteLength)
     copy.set(new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength))
     return copy.buffer

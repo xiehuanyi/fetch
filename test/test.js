@@ -139,8 +139,11 @@ exercise.forEach(function(exerciseMode) {
           inputs.push(['type Blob', new Blob([expected])])
         }
         if (support.arrayBuffer) {
+          var bufferWithCustomProperty = arrayBufferFromText(expected)
+          bufferWithCustomProperty.buffer = arrayBufferFromText('Wrong bytes!')
           inputs = inputs.concat([
             ['type ArrayBuffer', arrayBufferFromText(expected)],
+            ['type ArrayBuffer with custom buffer property', bufferWithCustomProperty],
             ['type TypedArray', new Uint8Array(arrayBufferFromText(expected))],
             ['type DataView', new DataView(arrayBufferFromText(expected))],
             ['type DataView subrange', new DataView(arrayBufferFromText('prefix' + expected + 'suffix'), 6, expected.length)],
